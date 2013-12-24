@@ -1,0 +1,17 @@
+.project
+.classpath
+/.settings
+/target
+/WindowsMonitor/Debug
+/WindowsMonitor/Release
+/WindowsMonitor/x64
+/WindowsMonitor/ipch
+/WindowsMonitor/WindowsMonitor.sdf
+/WindowsMonitor/WindowsMonitor.opensdf
+/WindowsMonitor/WindowsMonitor.v11.suo
+/WindowsMonitor/Monitor/Debug
+/WindowsMonitor/Monitor/Release
+/WindowsMonitor/Monitor/x64
+/WindowsMonitor/Native/Debug
+/WindowsMonitor/Native/Release
+/WindowsMonitor/Native/x64
