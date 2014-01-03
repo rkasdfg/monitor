@@ -12,8 +12,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "LogicalDisk")
 public class LogicalDiskModel {
-	
-	
 
 	private  List<LogicalDiskModelChild> logicalDiskList;
 	  public LogicalDiskModel(){
