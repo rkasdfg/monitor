@@ -11,9 +11,10 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.SigarException;
 
-@XmlRootElement(name="Processor")
+@XmlRootElement(name="Processors")
 public class ProcessorModel {
 	private  List<ProcessorModelChild> processorModelList;
+	
 	private Sigar sigar = new Sigar();
 	
 	public ProcessorModel(){
@@ -29,8 +30,9 @@ public class ProcessorModel {
 		}
 		 
 	}
-	 @XmlElementWrapper
-	 @XmlElement(name="processorModelChild",type=ProcessorModelChild.class)            
+	
+	@XmlElementWrapper(name="processors")
+	@XmlElement(name="processor",type=ProcessorModelChild.class) 
 	public List<ProcessorModelChild> getProcessorModelList() {
 		return processorModelList;
 	}

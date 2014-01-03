@@ -1,6 +1,9 @@
 package org.bench4q.monitor.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
@@ -9,57 +12,79 @@ import org.hyperic.sigar.SigarException;
 @XmlRootElement
 public class ProcessorModelChild {
 	private String instance;
-	private Double processorTimePercent;
-	private Double userTimePercent;
-	private Double privilegedTimePercent;
+	private double processorTimePercent;
+	private double userTimePercent;
+	private double privilegedTimePercent;
+	
 	private CpuPerc cpuPerc;
 	private Sigar sigar = new Sigar();
 	private int id;
 	
+	//test code
+	public static void main(String[] agrs){
+		ProcessorModelChild testModel = new ProcessorModelChild(0);
+		System.out.println(testModel.getPrivilegedTimePercent());
+		System.out.println(testModel.getUserTimePercent());
+		System.out.println(testModel.getProcessorTimePercent());
+	}
+	
+	public ProcessorModelChild(){
+		
+	}
 	
 	public ProcessorModelChild(int id){
 		this.id = id;
 		this.setInstance("Cpu"+id);
+		this.getPrivilegedTimePercent();
+		this.getProcessorTimePercent();
+		this.getUserTimePercent();
 	}
 	
+	@XmlElement
 	public String getInstance() {
-		return instance;
+		return this.instance;
 	}
 	public void setInstance(String instance) {
 		this.instance = instance;
 	}
-	public Double getProcessorTimePercent() {
+	
+	@XmlElement
+	public String getProcessorTimePercent() {
 		try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}
 		this.setProcessorTimePercent(this.cpuPerc.getCombined());
-		return processorTimePercent;
+		return CpuPerc.format(processorTimePercent);
 	}
 	public void setProcessorTimePercent(Double processorTimePercent) {
 		this.processorTimePercent = processorTimePercent;
 	}
-	public Double getUserTimePercent() {
+	
+	@XmlElement
+	public String getUserTimePercent() {
 		try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}
 		this.setUserTimePercent(cpuPerc.getUser());
-		return userTimePercent;
+		return CpuPerc.format(userTimePercent);
 	}
 	public void setUserTimePercent(Double userTimePercent) {
 		this.userTimePercent = userTimePercent;
 	}
-	public Double getPrivilegedTimePercent() {
+	
+	@XmlElement
+	public String getPrivilegedTimePercent() {
 		try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}
 		this.setPrivilegedTimePercent(cpuPerc.getSys());
-		return privilegedTimePercent;
+		return CpuPerc.format(privilegedTimePercent);
 	}
 	public void setPrivilegedTimePercent(Double privilegedTimePercent) {
 		this.privilegedTimePercent = privilegedTimePercent;

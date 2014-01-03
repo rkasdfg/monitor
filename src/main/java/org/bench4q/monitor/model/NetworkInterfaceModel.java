@@ -14,15 +14,13 @@ import org.hyperic.sigar.SigarException;
 @XmlRootElement(name = "NetworkInterface")
 public class NetworkInterfaceModel {
 	private List<NetworkInterfaceModelChild> networkList;
-	private Sigar sigar = new Sigar();
-	
-	  @XmlElementWrapper
-      @XmlElement(name="Instance",type=NetworkInterfaceModelChild.class)    
+	private Sigar sigar = new Sigar();  
 	  
+	@XmlElementWrapper(name="network_interfaces")
+	@XmlElement(name="network_interface",type=NetworkInterfaceModelChild.class) 
 	public List<NetworkInterfaceModelChild> getNetworkList() {
 		return networkList;
 	}
-
 	public void setNetworkList(List<NetworkInterfaceModelChild> networkList) {
 		this.networkList = networkList;
 	}
@@ -35,7 +33,6 @@ public class NetworkInterfaceModel {
 				this.networkList.add(networkInterfaceModelChild);
 			}
 		} catch (SigarException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

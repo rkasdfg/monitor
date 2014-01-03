@@ -1,5 +1,6 @@
 package org.bench4q.monitor.model;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import java.util.Timer;
@@ -15,8 +16,9 @@ public class NetworkInterfaceModelChild {
 	private double kiloBytesTotalPerSecond;
 	private double kiloBytesReceivedPerSecond;
 	private double kiloBytesSentPerSecond;
+	private String address;
 	private String instance;
-	
+	private Sigar sigar = new Sigar();
 	
 	//test code
 //	public static void main(String[] args){
@@ -41,56 +43,73 @@ public class NetworkInterfaceModelChild {
 //		
 //	}
 	
+	public NetworkInterfaceModelChild(){
+		
+	}
 	public NetworkInterfaceModelChild(String instance){
 		this.instance = instance;
 	}
 	
+	@XmlElement
+	public String getAddress(){
+		try {
+			setAddress(sigar.getNetInterfaceConfig(instance).getAddress());
+		} catch (SigarException e) {
+			e.printStackTrace();
+		}
+		return this.address;
+	}
+	public void setAddress(String address){
+		this.address = address;
+	}
+	
+	@XmlElement
 	public double getKiloBytesReceivedPerSecond() {
-		long interval = 1000;
+		long interval = 500;
 		Timer timer = new Timer();
 		timer.schedule(new CalculateBytesReceivedPerSecond(this, timer, interval), interval);
 		try {
-			Thread.sleep(interval + 5);
+			Thread.sleep(interval + 50);
 			return kiloBytesReceivedPerSecond;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return kiloBytesReceivedPerSecond;
 		}
 	}
-	
 	public void setKiloBytesReceivedPerSecond(double kiloBytesReceivedPerSecond) {
 		this.kiloBytesReceivedPerSecond = kiloBytesReceivedPerSecond;
 	}
 	
+	@XmlElement
 	public double getKiloBytesSentPerSecond() {
-		long interval = 1000;
+		long interval = 500;
 		Timer timer = new Timer();
 		timer.schedule(new CalculateBytesSentPerSecond(this, timer, interval), interval);
 		try {
-			Thread.sleep(interval + 5);
+			Thread.sleep(interval + 50);
 			return kiloBytesSentPerSecond;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return kiloBytesSentPerSecond;
 		}
 	}
-	
 	public void setKiloBytesSentPerSecond(double kiloBytesSentPerSecond) {
 		this.kiloBytesSentPerSecond = kiloBytesSentPerSecond;
 	}
 	
+	@XmlElement
 	public String getInstance() {
 		return instance;
 	}
-	
 	public void setInstance(String instance) {
 		this.instance = instance;
 	}
 	
+	@XmlElement
 	public double getKiloBytesTotalPerSecond() {
-		return kiloBytesReceivedPerSecond + kiloBytesSentPerSecond;
+		setKiloBytesTotalPerSecond(kiloBytesReceivedPerSecond + kiloBytesSentPerSecond);
+		return kiloBytesTotalPerSecond;
 	}
-	
 	public void setKiloBytesTotalPerSecond(double kiloBytesTotalPerSecond) {
 		this.kiloBytesTotalPerSecond = kiloBytesTotalPerSecond;
 	}	

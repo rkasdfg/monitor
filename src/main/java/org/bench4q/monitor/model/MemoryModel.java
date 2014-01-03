@@ -1,24 +1,24 @@
 package org.bench4q.monitor.model;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.Swap;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.Mem;
+import org.hyperic.sigar.CpuPerc;
 
 @XmlRootElement(name="Memory")
 public class MemoryModel {
-	
-//	private double pageFaultsPerSecond;
-	private double pagesPerSecond;
+	private long pagesPerSecond;
 	private long pagesInputPerSecond;
 	private long pagesOutputPerSecond;
-	private double cacheBytes;
-	private double committedBytes;
-	private double availableKiloBytes;
-	private double totalKiloBytes;
+	private long availableKiloBytes;
+	private long totalKiloBytes;
 	private double memoryUsedPercent;
+	
 	private Sigar sigar = new Sigar();
 	private Swap swap;
 	private Mem mem;
@@ -35,22 +35,25 @@ public class MemoryModel {
 	}
 	
 	public MemoryModel(){
-		try {
-			swap = sigar.getSwap();
-			mem = sigar.getMem();
-		} catch (SigarException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.getPagesInputPerSecond();
+		this.getPagesOutputPerSecond();
+		this.getPagesPerSecond();
+		this.getMemoryUsedPercent();
+		this.getAvailableKiloBytes();
+		this.getTotalKiloBytes();
 	}
-	public double getPagesPerSecond() {
+	
+	@XmlElement
+	public long getPagesPerSecond() {
 		setPagesPerSecond(getPagesInputPerSecond() + getPagesOutputPerSecond());
 		return pagesPerSecond;
 	}
-	public void setPagesPerSecond(double pagesPerSecond) {
+	public void setPagesPerSecond(long pagesPerSecond) {
 		this.pagesPerSecond = pagesPerSecond;
 	}
-	public double getPagesInputPerSecond() {
+	
+	@XmlElement
+	public long getPagesInputPerSecond() {
 		try {
 			swap = sigar.getSwap();
 		} catch (SigarException e) {
@@ -62,7 +65,9 @@ public class MemoryModel {
 	public void setPagesInputPerSecond(long pagesInputPerSecond) {
 		this.pagesInputPerSecond = pagesInputPerSecond;
 	}
-	public double getPagesOutputPerSecond() {
+	
+	@XmlElement
+	public long getPagesOutputPerSecond() {
 		try {
 			swap = sigar.getSwap();
 		} catch (SigarException e) {
@@ -74,50 +79,44 @@ public class MemoryModel {
 	public void setPagesOutputPerSecond(long pagesOutputPerSecond) {
 		this.pagesOutputPerSecond = pagesOutputPerSecond;
 	}
-	public double getCacheBytes() {
-		return cacheBytes;
-	}
-	public void setCacheBytes(double cacheBytes) {
-		this.cacheBytes = cacheBytes;
-	}
-		public double getCommittedBytes() {
-		return committedBytes;
-	}
-	public void setCommittedBytes(double committedBytes) {
-		this.committedBytes = committedBytes;
-	}
-	public double getAvailableKiloBytes() {
+	
+	@XmlElement
+	public long getAvailableKiloBytes() {
 		try {
 			mem = sigar.getMem();
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}
-		setAvailableKiloBytes(mem.getFree());
+		setAvailableKiloBytes(mem.getFree()/1024L);
 		return availableKiloBytes;
 	}
-	public void setAvailableKiloBytes(double availableKiloBytes) {
+	public void setAvailableKiloBytes(long availableKiloBytes) {
 		this.availableKiloBytes = availableKiloBytes;
 	}
-	public double getTotalKiloBytes(){
+	
+	@XmlElement
+	public long getTotalKiloBytes(){
 		try {
 			mem = sigar.getMem();
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}
-		setTotalKiloBytes(mem.getTotal());
+		setTotalKiloBytes(mem.getTotal()/1024L);
 		return totalKiloBytes;
 	}
-	public void setTotalKiloBytes(double totalKiloBytes){
+	public void setTotalKiloBytes(long totalKiloBytes){
 		this.totalKiloBytes = totalKiloBytes;
 	}
-	public double getMemoryUsedPercent(){
+	
+	@XmlElement
+	public String getMemoryUsedPercent(){
 		try {
 			mem = sigar.getMem();
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}
 		setMemoryUsedPercent(mem.getUsedPercent());
-		return memoryUsedPercent;
+		return CpuPerc.format(memoryUsedPercent/100);
 	}
 	public void setMemoryUsedPercent(double memoryUsedPercent){
 		this.memoryUsedPercent = memoryUsedPercent;
