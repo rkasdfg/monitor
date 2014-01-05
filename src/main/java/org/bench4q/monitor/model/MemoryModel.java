@@ -2,7 +2,6 @@ package org.bench4q.monitor.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.Swap;

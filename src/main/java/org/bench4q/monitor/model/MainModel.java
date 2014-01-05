@@ -1,11 +1,9 @@
 package org.bench4q.monitor.model;
 
-import org.bench4q.monitor.model.*;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -35,6 +33,6 @@ public class MainModel {
 		processorModel = new ProcessorModel();
 		memoryModel = new MemoryModel();
 		physicalDiskModel = new PhysicalDiskModel();
-		networkInterfaceModel = new NetworkInterfaceModel();
+		//networkInterfaceModel = new NetworkInterfaceModel();
 	}
 }

@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
 @XmlRootElement(name = "NetworkInterface")

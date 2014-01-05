@@ -35,7 +35,12 @@ public class PhysicalDiskModel {
 		try {
 			fileSystemList = sigar.getFileSystemList();
 			for(int i = 0; i < fileSystemList.length; ++i){
-				fileSystemUsageList.add(this.sigar.getFileSystemUsage(fileSystemList[i].getDirName()));
+				FileSystem fs = fileSystemList[i];
+				if (fs.getType()==2) {
+					fileSystemUsageList.add(this.sigar.getFileSystemUsage(fs.getDirName()));
+				}
+				
+				//this.sigar.getDiskUsage(name)
 			}
 		} catch (SigarException e) {
 			e.printStackTrace();
@@ -111,7 +116,8 @@ class CalculateDiskWriteRate extends TimerTask{
 		try {
 			fileSystemList = sigar.getFileSystemList();
 			for(int i = 0; i < fileSystemList.length; ++i){
-				this.preDiskWriteBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskWriteBytes();
+				if (fileSystemList[i].getType()==2) 
+					this.preDiskWriteBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskWriteBytes();
 			}
 		} catch (SigarException e) {
 			e.printStackTrace();
@@ -126,7 +132,8 @@ class CalculateDiskWriteRate extends TimerTask{
 		try {
 			fileSystemList = sigar.getFileSystemList();
 			for(int i = 0; i < fileSystemList.length; ++i){
-				postDiskWriteBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskWriteBytes();
+				if (fileSystemList[i].getType()==2) 
+					postDiskWriteBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskWriteBytes();
 			}
 		} catch (SigarException e) {
 			e.printStackTrace();
@@ -153,7 +160,8 @@ class CalculateDiskReadRate extends TimerTask{
 		try {
 			fileSystemList = sigar.getFileSystemList();
 			for(int i = 0; i < fileSystemList.length; ++i){
-				this.preDiskReadBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskReadBytes();
+				if (fileSystemList[i].getType()==2) 
+					this.preDiskReadBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskReadBytes();
 			}
 		} catch (SigarException e) {
 			e.printStackTrace();
@@ -168,7 +176,8 @@ class CalculateDiskReadRate extends TimerTask{
 		try {
 			fileSystemList = sigar.getFileSystemList();
 			for(int i = 0; i < fileSystemList.length; ++i){
-				postDiskReadBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskReadBytes();
+				if (fileSystemList[i].getType()==2) 
+					postDiskReadBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskReadBytes();
 			}
 		} catch (SigarException e) {
 			e.printStackTrace();

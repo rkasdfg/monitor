@@ -5,8 +5,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.NetInterfaceStat;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
@@ -21,27 +19,27 @@ public class NetworkInterfaceModelChild {
 	private Sigar sigar = new Sigar();
 	
 	//test code
-//	public static void main(String[] args){
-//		Sigar sigar = new Sigar();
-//		try {
-//			String[] netInterfaceList;
-//			netInterfaceList = sigar.getNetInterfaceList();
-//			System.out.println("network list length:" + netInterfaceList.length);
-//			for(int i = 0; i < netInterfaceList.length; ++i){
-//				System.out.println(netInterfaceList[i] + ": " + sigar.getNetInterfaceConfig(netInterfaceList[i]).getAddress());
-//			}
-//			NetworkInterfaceModelChild child = new NetworkInterfaceModelChild(netInterfaceList[3]);
-//			System.out.println("network name: " + netInterfaceList[3]);
-//			System.out.println("IP address: " + sigar.getNetInterfaceConfig(netInterfaceList[3]).getAddress());
-//			System.out.println("network description: " + sigar.getNetInterfaceConfig(netInterfaceList[3]).getDescription());
-//			System.out.println("receive rate: " + child.getKiloBytesReceivedPerSecond());
-//			System.out.println("send rate: " + child.getKiloBytesSentPerSecond());
-//			System.out.println("total rate: " + child.getKiloBytesTotalPerSecond());
-//		} catch (SigarException e) {
-//			e.printStackTrace();
-//		}
-//		
-//	}
+/*	public static void main(String[] args){
+		Sigar sigar = new Sigar();
+		try {
+			String[] netInterfaceList;
+			netInterfaceList = sigar.getNetInterfaceList();
+			System.out.println("network list length:" + netInterfaceList.length);
+			for(int i = 0; i < netInterfaceList.length; ++i){
+				System.out.println(netInterfaceList[i] + ": " + sigar.getNetInterfaceConfig(netInterfaceList[i]).getAddress());
+			}
+			NetworkInterfaceModelChild child = new NetworkInterfaceModelChild(netInterfaceList[3]);
+			System.out.println("network name: " + netInterfaceList[3]);
+			System.out.println("IP address: " + sigar.getNetInterfaceConfig(netInterfaceList[3]).getAddress());
+			System.out.println("network description: " + sigar.getNetInterfaceConfig(netInterfaceList[3]).getDescription());
+			System.out.println("receive rate: " + child.getKiloBytesReceivedPerSecond());
+			System.out.println("send rate: " + child.getKiloBytesSentPerSecond());
+			System.out.println("total rate: " + child.getKiloBytesTotalPerSecond());
+		} catch (SigarException e) {
+			e.printStackTrace();
+		}
+		
+	}*/
 	
 	public NetworkInterfaceModelChild(){
 		
@@ -176,8 +174,6 @@ class CalculateBytesReceivedPerSecond extends TimerTask{
 		try {
 			NetInterfaceStat netInterfaceStat = sigar.getNetInterfaceStat(networkInterfaceModelChild.getInstance());
 			long postBytesReceivedSoFar = netInterfaceStat.getRxBytes();
-//			System.out.println("post bytes received: " + postBytesReceivedSoFar);
-//			System.out.println("pre bytes received: " + preBytesReceivedSoFar);
 			networkInterfaceModelChild.setKiloBytesReceivedPerSecond((double)(postBytesReceivedSoFar - preBytesReceivedSoFar)/interval);
 		} catch (SigarException e) {
 			e.printStackTrace();

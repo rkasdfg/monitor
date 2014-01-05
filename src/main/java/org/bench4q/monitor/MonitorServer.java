@@ -1,5 +1,6 @@
 package org.bench4q.monitor;
 
+import org.bench4q.monitor.service.WriteSystemInfoToLocalDisk;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
@@ -39,6 +40,7 @@ public class MonitorServer {
 			Connector connector = new SocketConnector();
 			connector.setPort(this.getPort());
 			this.getServer().addConnector(connector);
+			
 			ServletContextHandler servletContextHandler = new ServletContextHandler();
 			ServletHolder servletHolder = servletContextHandler.addServlet(
 					DispatcherServlet.class, "/");
@@ -47,6 +49,9 @@ public class MonitorServer {
 							"classpath*:org/bench4q/monitor/config/application-context.xml");
 			this.getServer().setHandler(servletContextHandler);
 			this.getServer().start();
+			WriteSystemInfoToLocalDisk testWrite = new WriteSystemInfoToLocalDisk();
+			testWrite.setSavaPath("D:\\sigartmp\\");		
+			testWrite.writeCurrentSystemInfoToLocalDisk();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

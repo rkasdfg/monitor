@@ -3,7 +3,6 @@ package org.bench4q.monitor.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.ProcTime;
 import org.hyperic.sigar.ProcCpu;
 import org.hyperic.sigar.ProcMem;
 import org.hyperic.sigar.ProcState;

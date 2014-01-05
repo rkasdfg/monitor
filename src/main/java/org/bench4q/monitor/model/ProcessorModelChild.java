@@ -1,9 +1,7 @@
 package org.bench4q.monitor.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
@@ -35,6 +33,11 @@ public class ProcessorModelChild {
 	public ProcessorModelChild(int id){
 		this.id = id;
 		this.setInstance("Cpu"+id);
+		try {
+			cpuPerc = sigar.getCpuPercList()[id];
+		} catch (SigarException e) {
+			e.printStackTrace();
+		}
 		this.getPrivilegedTimePercent();
 		this.getProcessorTimePercent();
 		this.getUserTimePercent();
@@ -50,11 +53,11 @@ public class ProcessorModelChild {
 	
 	@XmlElement
 	public String getProcessorTimePercent() {
-		try {
+		/*try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
-		}
+		}*/
 		this.setProcessorTimePercent(this.cpuPerc.getCombined());
 		return CpuPerc.format(processorTimePercent);
 	}
@@ -64,11 +67,11 @@ public class ProcessorModelChild {
 	
 	@XmlElement
 	public String getUserTimePercent() {
-		try {
+		/*try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
-		}
+		}*/
 		this.setUserTimePercent(cpuPerc.getUser());
 		return CpuPerc.format(userTimePercent);
 	}
@@ -78,11 +81,11 @@ public class ProcessorModelChild {
 	
 	@XmlElement
 	public String getPrivilegedTimePercent() {
-		try {
+		/*try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
-		}
+		}*/
 		this.setPrivilegedTimePercent(cpuPerc.getSys());
 		return CpuPerc.format(privilegedTimePercent);
 	}

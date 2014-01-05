@@ -13,19 +13,12 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.bench4q.monitor.model.MainModel;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.XMLWriter;
-import org.dom4j.io.OutputFormat;
+
 
 import java.io.*;
 
-import org.bench4q.monitor.service.*;
-
 class XmlFileFilter implements FilenameFilter{
 
-	@Override
 	public boolean accept(File dir, String name) {
 		return name.endsWith(".xml");
 	}
@@ -33,12 +26,12 @@ class XmlFileFilter implements FilenameFilter{
 
 public class ReadSystemInfoFromLocalDisk {
 	private String savePath;
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	
 	//test code
 	public static void main(String[] args){
 		ReadSystemInfoFromLocalDisk test = new ReadSystemInfoFromLocalDisk();
-		test.setSavePath("/Users/apple/Desktop/tmp/");
+		test.setSavePath("D:\\sigartmp\\");
 		Calendar lowerCalendal = Calendar.getInstance();
 		lowerCalendal.clear();
 		lowerCalendal.set(2014, 0, 3, 20, 0, 0);
