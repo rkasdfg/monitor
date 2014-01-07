@@ -1,6 +1,8 @@
 package org.bench4q.monitor;
 
-import org.bench4q.monitor.service.WriteSystemInfoToLocalDisk;
+import java.util.Timer;
+
+import org.bench4q.monitor.service.TimerService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
@@ -49,9 +51,6 @@ public class MonitorServer {
 							"classpath*:org/bench4q/monitor/config/application-context.xml");
 			this.getServer().setHandler(servletContextHandler);
 			this.getServer().start();
-			WriteSystemInfoToLocalDisk testWrite = new WriteSystemInfoToLocalDisk();
-			testWrite.setSavaPath("D:\\sigartmp\\");		
-			testWrite.writeCurrentSystemInfoToLocalDisk();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,9 +71,15 @@ public class MonitorServer {
 			this.setServer(null);
 		}
 	}
-	public static void main(String[] args) {
+	
+
+	public static void main(String[] args) throws InterruptedException {
 
 		MonitorServer monitorServer = new MonitorServer(5556);
 		monitorServer.start();
+		Timer timer = new Timer();
+		timer.schedule(new TimerService(), 1000, 60000);
+
+
 	}
 }
