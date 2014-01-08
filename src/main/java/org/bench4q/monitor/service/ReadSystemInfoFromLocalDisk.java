@@ -69,7 +69,7 @@ public class ReadSystemInfoFromLocalDisk {
 			System.out.println("return");
 			return null;
 		}
-		
+		this.setSavePath("D:\\sigartmp\\");
 		File path = new File(savePath);
 		XmlFileFilter xmlFileFilter = new XmlFileFilter();
 		String[] xmlFiles = path.list(xmlFileFilter);
