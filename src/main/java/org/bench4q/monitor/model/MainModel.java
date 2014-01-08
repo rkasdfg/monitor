@@ -22,7 +22,7 @@ public class MainModel {
 	@XmlElement(name="network_info")
 	private NetworkInterfaceModel networkInterfaceModel;
 	
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	
 	public MainModel(){
 		

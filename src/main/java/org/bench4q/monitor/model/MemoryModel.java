@@ -7,7 +7,6 @@ import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.Swap;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.Mem;
-import org.hyperic.sigar.CpuPerc;
 
 @XmlRootElement(name="Memory")
 public class MemoryModel {
@@ -108,14 +107,15 @@ public class MemoryModel {
 	}
 	
 	@XmlElement
-	public String getMemoryUsedPercent(){
+	public double getMemoryUsedPercent(){
 		try {
 			mem = sigar.getMem();
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}
-		setMemoryUsedPercent(mem.getUsedPercent());
-		return CpuPerc.format(memoryUsedPercent/100);
+		long temp = Math.round(mem.getUsedPercent()*100);
+		setMemoryUsedPercent(temp/100.0);
+		return this.memoryUsedPercent;
 	}
 	public void setMemoryUsedPercent(double memoryUsedPercent){
 		this.memoryUsedPercent = memoryUsedPercent;

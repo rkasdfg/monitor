@@ -34,10 +34,10 @@ public class ReadSystemInfoFromLocalDisk {
 		test.setSavePath("D:\\sigartmp\\");
 		Calendar lowerCalendal = Calendar.getInstance();
 		lowerCalendal.clear();
-		lowerCalendal.set(2014, 0, 3, 20, 0, 0);
+		lowerCalendal.set(2014, 0, 8, 20, 10, 0);
 		Calendar upperCalendar = Calendar.getInstance();
 		upperCalendar.clear();
-		upperCalendar.set(2014, 0, 3, 22, 0, 0);
+		upperCalendar.set(2014, 0, 8, 20, 13, 0);
 		
 		List<MainModel> mainModelList = test.ReadSystemInfoByDate(lowerCalendal.getTime(), upperCalendar.getTime());
 		FileWriter writer = null;	

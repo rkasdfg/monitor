@@ -1,5 +1,7 @@
 package org.bench4q.monitor.model;
 
+import java.text.DecimalFormat;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -52,44 +54,49 @@ public class ProcessorModelChild {
 	}
 	
 	@XmlElement
-	public String getProcessorTimePercent() {
+	public double getProcessorTimePercent() {
 		/*try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}*/
-		this.setProcessorTimePercent(this.cpuPerc.getCombined());
-		return CpuPerc.format(processorTimePercent);
+		long temp = Math.round(cpuPerc.getCombined()*10000);
+		this.setProcessorTimePercent(temp/100.0);
+		return processorTimePercent;
 	}
-	public void setProcessorTimePercent(Double processorTimePercent) {
+	public void setProcessorTimePercent(double processorTimePercent) {
 		this.processorTimePercent = processorTimePercent;
 	}
 	
 	@XmlElement
-	public String getUserTimePercent() {
+	public double getUserTimePercent() {
 		/*try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
 		}*/
-		this.setUserTimePercent(cpuPerc.getUser());
-		return CpuPerc.format(userTimePercent);
+		long temp = Math.round(cpuPerc.getUser()*10000);
+		this.setUserTimePercent(temp/100.0);
+		//return CpuPerc.format(userTimePercent);
+		return this.userTimePercent;
 	}
-	public void setUserTimePercent(Double userTimePercent) {
+	public void setUserTimePercent(double userTimePercent) {
 		this.userTimePercent = userTimePercent;
 	}
 	
 	@XmlElement
-	public String getPrivilegedTimePercent() {
-		/*try {
+	public double getPrivilegedTimePercent() {
+		try {
 			cpuPerc = sigar.getCpuPercList()[id];
 		} catch (SigarException e) {
 			e.printStackTrace();
-		}*/
-		this.setPrivilegedTimePercent(cpuPerc.getSys());
-		return CpuPerc.format(privilegedTimePercent);
+		}
+		long temp = Math.round(cpuPerc.getSys()*10000);
+		this.setPrivilegedTimePercent(temp/100.0);
+		//return CpuPerc.format(privilegedTimePercent);
+		return this.privilegedTimePercent;
 	}
-	public void setPrivilegedTimePercent(Double privilegedTimePercent) {
+	public void setPrivilegedTimePercent(double privilegedTimePercent) {
 		this.privilegedTimePercent = privilegedTimePercent;
 	}
 }

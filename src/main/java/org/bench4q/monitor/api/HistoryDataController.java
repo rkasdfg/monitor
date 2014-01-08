@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/Monitor")
 public class HistoryDataController {
 	@RequestMapping("history")
-	@ResponseBody List<MainModel> getHistory(@RequestParam String starttime, @RequestParam String endtime) throws ParseException
+	@ResponseBody ListMainModel getHistory(@RequestParam String starttime, @RequestParam String endtime) throws ParseException
 	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Date startDate = dateFormat.parse(starttime);
@@ -25,7 +25,8 @@ public class HistoryDataController {
 		ReadSystemInfoFromLocalDisk historyservice = new ReadSystemInfoFromLocalDisk();
 		ListMainModel retModel = new ListMainModel();
 		//retModel.setHistorylist(historyservice.ReadSystemInfoByDate(startDate, endDate));
-		return historyservice.ReadSystemInfoByDate(startDate, endDate);
+		retModel.setHistorylist(historyservice.ReadSystemInfoByDate(startDate, endDate));
+		return retModel;
 	}
 
 }
