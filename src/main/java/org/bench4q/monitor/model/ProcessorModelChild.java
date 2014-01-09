@@ -1,7 +1,5 @@
 package org.bench4q.monitor.model;
 
-import java.text.DecimalFormat;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
