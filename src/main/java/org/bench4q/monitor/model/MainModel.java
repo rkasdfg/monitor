@@ -33,6 +33,6 @@ public class MainModel {
 		processorModel = new ProcessorModel();
 		memoryModel = new MemoryModel();
 		physicalDiskModel = new PhysicalDiskModel();
-		//networkInterfaceModel = new NetworkInterfaceModel();
+		networkInterfaceModel = new NetworkInterfaceModel();
 	}
 }

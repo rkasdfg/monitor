@@ -1,15 +1,11 @@
 package org.bench4q.monitor.model;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.hyperic.sigar.NetInterfaceStat;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
