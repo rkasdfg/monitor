@@ -21,21 +21,5 @@
 			<source>target/bench4q-monitor.jar</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
-		<file>
-			<source>WindowsMonitor/Release/Monitor.dll</source>
-			<outputDirectory>/lib/x86</outputDirectory>
-		</file>
-		<file>
-			<source>WindowsMonitor/Release/Native.dll</source>
-			<outputDirectory>/lib/x86</outputDirectory>
-		</file>
-		<file>
-			<source>WindowsMonitor/x64/Release/Monitor.dll</source>
-			<outputDirectory>/lib/x64</outputDirectory>
-		</file>
-		<file>
-			<source>WindowsMonitor/x64/Release/Native.dll</source>
-			<outputDirectory>/lib/x64</outputDirectory>
-		</file>
 	</files>
 </assembly>

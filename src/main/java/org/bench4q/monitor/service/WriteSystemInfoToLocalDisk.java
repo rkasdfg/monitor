@@ -17,7 +17,7 @@ public class WriteSystemInfoToLocalDisk {
 	//test code
 	public static void main(String[] args){
 		WriteSystemInfoToLocalDisk testWrite = new WriteSystemInfoToLocalDisk();
-		testWrite.setSavaPath("D:\\sigartmp\\");		
+		testWrite.setSavaPath("D:/sigartmp/");		
 		testWrite.writeCurrentSystemInfoToLocalDisk();
 	}
 	

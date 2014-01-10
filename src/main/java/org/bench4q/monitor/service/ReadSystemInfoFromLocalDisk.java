@@ -31,7 +31,7 @@ public class ReadSystemInfoFromLocalDisk {
 	//test code
 	public static void main(String[] args){
 		ReadSystemInfoFromLocalDisk test = new ReadSystemInfoFromLocalDisk();
-		test.setSavePath("D:\\sigartmp\\");
+		test.setSavePath("D:/sigartmp/");
 		Calendar lowerCalendal = Calendar.getInstance();
 		lowerCalendal.clear();
 		lowerCalendal.set(2014, 0, 8, 20, 10, 0);
@@ -69,7 +69,7 @@ public class ReadSystemInfoFromLocalDisk {
 			System.out.println("return");
 			return null;
 		}
-		this.setSavePath("D:\\sigartmp\\");
+		this.setSavePath("D:/sigartmp/");
 		File path = new File(savePath);
 		XmlFileFilter xmlFileFilter = new XmlFileFilter();
 		String[] xmlFiles = path.list(xmlFileFilter);

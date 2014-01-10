@@ -6,7 +6,7 @@ public class TimerService extends TimerTask {
 	@Override
 	public void run(){
 		WriteSystemInfoToLocalDisk testWrite = new WriteSystemInfoToLocalDisk();
-		testWrite.setSavaPath("D:\\sigartmp\\");		
+		testWrite.setSavaPath("D:/sigartmp/");		
 		testWrite.writeCurrentSystemInfoToLocalDisk();
 	}
 
