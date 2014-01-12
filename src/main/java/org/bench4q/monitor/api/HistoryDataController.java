@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+import java.util.TimeZone;
+
 import org.bench4q.monitor.model.ListMainModel;
 import org.bench4q.monitor.service.ReadSystemInfoFromLocalDisk;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ public class HistoryDataController {
 	@ResponseBody ListMainModel getHistory(@RequestParam String starttime, @RequestParam String endtime) throws ParseException
 	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		Date startDate = dateFormat.parse(starttime);
 		Date endDate = dateFormat.parse(endtime);
 		ReadSystemInfoFromLocalDisk historyservice = new ReadSystemInfoFromLocalDisk();

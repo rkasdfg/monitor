@@ -2,6 +2,7 @@ package org.bench4q.monitor.model;
 
 
 import java.util.Date;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -29,7 +30,10 @@ public class MainModel {
 	}
 	
 	public MainModel(Date date){
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+
 		this.date = dateFormat.format(date);
+		
 		processorModel = new ProcessorModel();
 		memoryModel = new MemoryModel();
 		physicalDiskModel = new PhysicalDiskModel();
