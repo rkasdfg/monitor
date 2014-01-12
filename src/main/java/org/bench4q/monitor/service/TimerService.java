@@ -1,12 +1,15 @@
 package org.bench4q.monitor.service;
 
+import java.io.File;
 import java.util.TimerTask;
 
 public class TimerService extends TimerTask {
 	@Override
 	public void run(){
 		WriteSystemInfoToLocalDisk testWrite = new WriteSystemInfoToLocalDisk();
-		testWrite.setSavaPath("D:/sigartmp/");		
+		String filePath = System.getProperty("user.dir")+"/sigartmp";
+		new File(filePath).mkdirs(); 
+		testWrite.setSavaPath("sigartmp/");		
 		testWrite.writeCurrentSystemInfoToLocalDisk();
 	}
 

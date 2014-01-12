@@ -1,6 +1,7 @@
 package org.bench4q.monitor.service;
 
 import java.util.Date;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
 import javax.xml.bind.JAXBContext;
@@ -26,6 +27,7 @@ public class WriteSystemInfoToLocalDisk {
 	}
 	
 	public void writeCurrentSystemInfoToLocalDisk(){
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		Date date = new Date();
 		MainModel mainModel = new MainModel(date);   
 		FileWriter writer = null;
@@ -35,7 +37,6 @@ public class WriteSystemInfoToLocalDisk {
             Marshaller marshal = context.createMarshaller();
             marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshal.marshal(mainModel, System.out);
-            
             writer = new FileWriter(savePath + dateFormat.format(date) + ".xml");
             marshal.marshal(mainModel, writer);
         } catch (Exception e) {

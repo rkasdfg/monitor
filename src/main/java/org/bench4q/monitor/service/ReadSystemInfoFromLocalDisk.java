@@ -2,6 +2,7 @@ package org.bench4q.monitor.service;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.Calendar;
 import java.util.List;
 import java.text.SimpleDateFormat;
@@ -13,7 +14,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.bench4q.monitor.model.MainModel;
-
 
 import java.io.*;
 
@@ -28,10 +28,11 @@ public class ReadSystemInfoFromLocalDisk {
 	private String savePath;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	
+	
 	//test code
 	public static void main(String[] args){
 		ReadSystemInfoFromLocalDisk test = new ReadSystemInfoFromLocalDisk();
-		test.setSavePath("D:/sigartmp/");
+		test.setSavePath("sigartmp/");
 		Calendar lowerCalendal = Calendar.getInstance();
 		lowerCalendal.clear();
 		lowerCalendal.set(2014, 0, 8, 20, 10, 0);
@@ -62,6 +63,7 @@ public class ReadSystemInfoFromLocalDisk {
 	
 	
 	public List<MainModel> ReadSystemInfoByDate(Date lowerDate, Date upperDate){
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		String lowerDateString = dateFormat.format(lowerDate);
 		String upperDateString = dateFormat.format(upperDate);
 		
@@ -69,7 +71,7 @@ public class ReadSystemInfoFromLocalDisk {
 			System.out.println("return");
 			return null;
 		}
-		this.setSavePath("D:/sigartmp/");
+		this.setSavePath("sigartmp/");
 		File path = new File(savePath);
 		XmlFileFilter xmlFileFilter = new XmlFileFilter();
 		String[] xmlFiles = path.list(xmlFileFilter);
