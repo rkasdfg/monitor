@@ -37,7 +37,6 @@ public class MonitorServer {
 	public boolean start() {
 		try {
 			
-			System.out.println(this.getPort());
 			this.setServer(new Server());
 			Connector connector = new SocketConnector();
 			connector.setPort(this.getPort());
@@ -77,9 +76,9 @@ public class MonitorServer {
 
 		MonitorServer monitorServer = new MonitorServer(5556);
 		monitorServer.start();
-		Timer timer = new Timer();
+		/*Timer timer = new Timer();
 		timer.schedule(new TimerService(), 1000, 60000);
-
+*/
 
 	}
 }
