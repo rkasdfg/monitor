@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hyperic.sigar.SigarException;
+
 @XmlRootElement(name="history")
 @XmlType
 public class MainModel {
@@ -29,7 +31,7 @@ public class MainModel {
 		
 	}
 	
-	public MainModel(Date date){
+	public MainModel(Date date) throws SigarException{
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 
 		this.date = dateFormat.format(date);

@@ -10,13 +10,14 @@ import javax.xml.bind.Marshaller;
 import java.io.*;
 
 import org.bench4q.monitor.model.*;
+import org.hyperic.sigar.SigarException;
 
 public class WriteSystemInfoToLocalDisk {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	private String savePath;
 	
 	//test code
-	public static void main(String[] args){
+	public static void main(String[] args) throws SigarException{
 		WriteSystemInfoToLocalDisk testWrite = new WriteSystemInfoToLocalDisk();
 		testWrite.setSavaPath("D:/sigartmp/");		
 		testWrite.writeCurrentSystemInfoToLocalDisk();
@@ -25,15 +26,16 @@ public class WriteSystemInfoToLocalDisk {
 	public void setSavaPath(String savePath){
 		this.savePath = savePath;
 	}
-	
-	public void writeCurrentSystemInfoToLocalDisk(){
+	@SuppressWarnings("restriction")
+	public void writeCurrentSystemInfoToLocalDisk() throws SigarException{
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		Date date = new Date();
 		MainModel mainModel = new MainModel(date);   
 		FileWriter writer = null;
     
         try {
-        		JAXBContext context = JAXBContext.newInstance(MainModel.class);
+        		
+				JAXBContext context = JAXBContext.newInstance(MainModel.class);
             Marshaller marshal = context.createMarshaller();
             marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshal.marshal(mainModel, System.out);
