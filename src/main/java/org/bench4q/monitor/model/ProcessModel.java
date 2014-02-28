@@ -20,34 +20,41 @@ public class ProcessModel {
 	private Sigar sigar = GetSigar.getSigar();
 	private List<ProcessModelChild> processModelList;
 	private long[] processPids;
+	private List<String> processNameList;
+	private int size;
 
 	public static void main(String args[]) throws SigarException {
 		long time = System.currentTimeMillis();
 		ProcessModel processModel = new ProcessModel();
+		System.out.println("total process:"
+				+ processModel.getProcessPids().length);
+		for (int i = 0; i < processModel.getProcessPids().length; i++) {
+			if (processModel.getProcesModelList().get(i) != null) {
 
-		System.out.println("total process:"+processModel.getProcessPids().length);
-		for(int i=0;i<processModel.getProcessPids().length;i++){
-			if(processModel.getProcesModelList().get(i)!=null){
-				
-				System.out.println("pid:"+processModel.getProcesModelList().get(i)
-						.getInstanceString());
-				System.out.println("name:"+processModel.getProcesModelList().get(i)
-						.getProcessId());
-				System.out.println("cpu percent:"+processModel.getProcesModelList().get(i)
-						.getProcessorTimePercent());
-				System.out.println("getResidentBytes:"+processModel.getProcesModelList().get(i)
-						.getResidentKBytes());
-				System.out.println("virtural bytes:"+processModel.getProcesModelList().get(i)
-						.getVSize());
-				System.out.println(" bytes:"+processModel.getProcesModelList().get(i)
-						.getMemSize());
+				System.out.println("pid:"
+						+ processModel.getProcesModelList().get(i)
+								.getInstanceString());
+				System.out.println("name:"
+						+ processModel.getProcesModelList().get(i)
+								.getProcessId());
+				System.out.println("cpu percent:"
+						+ processModel.getProcesModelList().get(i)
+								.getProcessorTimePercent());
+				System.out.println("getResidentKBytes:"
+						+ processModel.getProcesModelList().get(i)
+								.getResidentKBytes());
+				System.out.println("virtural Kbytes:"
+						+ processModel.getProcesModelList().get(i).getVSize());
+				System.out
+						.println(" Kbytes:"
+								+ processModel.getProcesModelList().get(i)
+										.getMemSize());
 				break;
-				
+
 			}
-			
+
 		}
-	
-	
+
 		System.out.println(System.currentTimeMillis() - time);
 
 	}
@@ -55,7 +62,8 @@ public class ProcessModel {
 	public ProcessModel() throws SigarException {
 		this.setProcessPids();
 		this.setProcesModelList();
-
+		this.setProcessNameList();
+		this.setSize();
 	}
 
 	@XmlElementWrapper
@@ -86,6 +94,27 @@ public class ProcessModel {
 		this.processPids = sigar.getProcList();
 	}
 
+	@XmlElement
+	public List<String> getProcessNameList() {
+		return processNameList;
+	}
+
+	private void setProcessNameList() throws SigarException {
+		this.processNameList = new ArrayList<String>();
+		for (long pid : this.getProcessPids()) {
+			ProcState procState = sigar.getProcState(pid);
+			processNameList.add(procState.getName());
+		}
+	}
+
+	@XmlElement
+	public int getSize() {
+		return this.size;
+	}
+
+	private void setSize() throws SigarException {
+		this.size = sigar.getProcList().length;
+	}
 }
 
 class ProcessSigarReleatedModel {

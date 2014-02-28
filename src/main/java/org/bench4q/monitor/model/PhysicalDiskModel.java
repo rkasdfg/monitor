@@ -1,191 +1,194 @@
 package org.bench4q.monitor.model;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
+import org.bench4q.monitor.service.GetSigar;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.FileSystemUsage;
 import org.hyperic.sigar.SigarException;
 
-@XmlRootElement(name="PhysicalDisk")
+@XmlRootElement(name = "PhysicalDisk")
 public class PhysicalDiskModel {
-	private double diskReadRate;
-	private double diskWriteRate;
+	private Double diskReadKBytesRate;
+	private Double diskWriteKBytesRate;
 	private double curDiskQueLength;
-	private Sigar sigar = new Sigar();
-	private List<FileSystemUsage> fileSystemUsageList;
+	private double totalGB;
+	private double usedGB;
+	private double freeGB;
+	private double usedPercent;
+	private List<FileSystemModel> fieFileSystemModels;
+	private Sigar sigar = GetSigar.getSigar();
 	private FileSystem[] fileSystemList;
-	
-	public static void main(String[] args){
+	private final int interval = 500;
+
+	public static void main(String[] args) throws SigarException,
+			InterruptedException, ExecutionException {
 		PhysicalDiskModel physicalDiskModel = new PhysicalDiskModel();
-		
-		System.out.println(physicalDiskModel.getCurDiskQueLength());
-		System.out.println("read rate: " + physicalDiskModel.getDiskReadRate());
-		System.out.println("write rate: " + physicalDiskModel.getDiskWriteRate());
+		System.out.println("queue length:"
+				+ physicalDiskModel.getCurDiskQueLength());
+		System.out.println("read rate: "
+				+ physicalDiskModel.getDiskReadKBytesRate());
+
+		System.out.println("write rate: "
+				+ physicalDiskModel.getDiskWriteKBytesRate());
+		System.out.println("used percent:"+physicalDiskModel.getUsedPercent());
+		System.out.println("total:"+physicalDiskModel.getTotalGB());
+
 	}
-	
-	public PhysicalDiskModel(){
-		this.fileSystemUsageList = new ArrayList<FileSystemUsage>();
-		try {
-			fileSystemList = sigar.getFileSystemList();
-			for(int i = 0; i < fileSystemList.length; ++i){
-				FileSystem fs = fileSystemList[i];
-				if (fs.getType()==2) {
-					fileSystemUsageList.add(this.sigar.getFileSystemUsage(fs.getDirName()));
-				}
-				
-				//this.sigar.getDiskUsage(name)
-			}
-		} catch (SigarException e) {
-			e.printStackTrace();
+
+	public PhysicalDiskModel() throws SigarException, InterruptedException,
+			ExecutionException {
+
+		this.setFileSystemList();
+		this.setFieFileSystemModels();
+		this.setCurDiskQueLength();
+		this.setDiskReadKBytesRate();
+		this.setDiskWriteKBytesRate();
+		this.setFreeGB();
+		this.setTotalGB();
+		this.setUsedGB();
+		this.setUsedPercent();
+
+	}
+
+	@XmlElementWrapper
+	@XmlElement(name = "FileSystem", type = FileSystemModel.class)
+	public List<FileSystemModel> getFieFileSystemModels() {
+		return fieFileSystemModels;
+	}
+
+	private void setFieFileSystemModels() throws SigarException,
+			InterruptedException, ExecutionException {
+		this.fieFileSystemModels = new ArrayList<FileSystemModel>();
+
+		Map<String, FileSystemUsage> fileSysUsageMap = this
+				.getFileSystemUsages();
+		if (fileSysUsageMap.keySet() == null)
+			throw new NullPointerException();
+		for (String fileDir : fileSysUsageMap.keySet()) {
+			fieFileSystemModels.add(new FileSystemModel(fileSysUsageMap
+					.get(fileDir), fileDir, interval));
 		}
 	}
-	
+
 	@XmlElement
-	public double getDiskReadRate() {
-		Timer timer = new Timer();
-		long interval = 500;
-		timer.schedule(new CalculateDiskReadRate(this, timer, interval), interval);
-		try {
-			Thread.sleep(interval + 50);
-			return diskReadRate;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return diskReadRate;
+	public double getDiskReadKBytesRate() {
+		return diskReadKBytesRate;
+	}
+
+	private void setDiskReadKBytesRate() {
+
+		diskReadKBytesRate = new Double(0);
+
+		for (FileSystemModel fileSystemModel : this.fieFileSystemModels) {
+			diskReadKBytesRate += fileSystemModel.getDiskReadKBytesRate();
 		}
 	}
-	public void setDiskReadRate(double diskReadRate) {
-		this.diskReadRate = diskReadRate;
-	}
-	
+
 	@XmlElement
-	public double getDiskWriteRate() {
-		Timer timer = new Timer();
-		long interval = 500;
-		timer.schedule(new CalculateDiskWriteRate(this, timer, interval), interval);
-		try {
-			Thread.sleep(interval + 50);
-			return diskWriteRate;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return diskWriteRate;
+	public double getDiskWriteKBytesRate() {
+		return this.diskWriteKBytesRate;
+	}
+
+	private void setDiskWriteKBytesRate() {
+		this.diskWriteKBytesRate = new Double(0);
+		for (FileSystemModel fileSystemModel : this.fieFileSystemModels) {
+			this.diskWriteKBytesRate += fileSystemModel
+					.getDiskWriteKBytesRate();
 		}
 	}
-	public void setDiskWriteRate(double diskWriteRate) {
-		this.diskWriteRate = diskWriteRate;
-	}
-	
+
 	@XmlElement
 	public double getCurDiskQueLength() {
-		try {
-			fileSystemList = sigar.getFileSystemList();
-		} catch (SigarException e) {
-			e.printStackTrace();
-		}
-		for(int i = 0; i < fileSystemUsageList.size(); ++i){
-			if(i == 0)
-				this.curDiskQueLength = fileSystemUsageList.get(i).getDiskQueue();
-			else
-				this.curDiskQueLength += fileSystemUsageList.get(i).getDiskQueue();
-			//System.out.println("Disk"+i+": "+fileSystemUsageList.get(i).getDiskQueue());
-		}
-		return curDiskQueLength;
-	}
-	public void setCurDiskQueLength(double curDiskQueLength) {
-		this.curDiskQueLength = curDiskQueLength;
-	}
-}
 
-class CalculateDiskWriteRate extends TimerTask{
-	private PhysicalDiskModel physicalDiskModel;
-	//private DiskUsage diskUsage;
-	private long preDiskWriteBytes = 0;
-	private long interval;
-	private Timer timer;
-	private Sigar sigar = new Sigar();
-	
-	public CalculateDiskWriteRate(PhysicalDiskModel physicalDiskModel, Timer timer, long interval){
-		this.physicalDiskModel = physicalDiskModel;
-		FileSystem[] fileSystemList;
-		try {
-			fileSystemList = sigar.getFileSystemList();
-			for(int i = 0; i < fileSystemList.length; ++i){
-				if (fileSystemList[i].getType()==2) 
-					this.preDiskWriteBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskWriteBytes();
-			}
-		} catch (SigarException e) {
-			e.printStackTrace();
-		}
-		this.timer = timer;
-		this.interval = interval;
+		return this.curDiskQueLength;
 	}
-	@Override
-	public void run() {
-		long postDiskWriteBytes = 0;
-		FileSystem[] fileSystemList;
-		try {
-			fileSystemList = sigar.getFileSystemList();
-			for(int i = 0; i < fileSystemList.length; ++i){
-				if (fileSystemList[i].getType()==2) 
-					postDiskWriteBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskWriteBytes();
-			}
-		} catch (SigarException e) {
-			e.printStackTrace();
-		}
-		
-		//the interval is ms
-		//System.out.println("Disk Write Bytes: " + postDiskWriteBytes);
-		this.physicalDiskModel.setDiskWriteRate((postDiskWriteBytes - preDiskWriteBytes)/((double)interval/1000)/1024L);
-		this.timer.cancel();
-	}
-}
 
-class CalculateDiskReadRate extends TimerTask{
-	private PhysicalDiskModel physicalDiskModel;
-	//private DiskUsage diskUsage;
-	private long preDiskReadBytes = 0;
-	private long interval;
-	private Timer timer;
-	private Sigar sigar = new Sigar();
-	
-	public CalculateDiskReadRate(PhysicalDiskModel physicalDiskModel, Timer timer, long interval){
-		this.physicalDiskModel = physicalDiskModel;
-		FileSystem[] fileSystemList;
-		try {
-			fileSystemList = sigar.getFileSystemList();
-			for(int i = 0; i < fileSystemList.length; ++i){
-				if (fileSystemList[i].getType()==2) 
-					this.preDiskReadBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskReadBytes();
-			}
-		} catch (SigarException e) {
-			e.printStackTrace();
+	private void setCurDiskQueLength() throws SigarException {
+		this.curDiskQueLength = new Double(0);
+		for (FileSystemModel fileSystemModel : this.getFieFileSystemModels()) {
+			this.curDiskQueLength += fileSystemModel.getCurDiskQueLength();
 		}
-		this.timer = timer;
-		this.interval = interval;
 	}
-	@Override
-	public void run() {
-		long postDiskReadBytes = 0;
-		FileSystem[] fileSystemList;
-		try {
-			fileSystemList = sigar.getFileSystemList();
-			for(int i = 0; i < fileSystemList.length; ++i){
-				if (fileSystemList[i].getType()==2) 
-					postDiskReadBytes += sigar.getFileSystemUsage(fileSystemList[i].getDirName()).getDiskReadBytes();
-			}
-		} catch (SigarException e) {
-			e.printStackTrace();
+
+	@XmlElement
+	public FileSystem[] getFileSystemList() {
+		return fileSystemList;
+	}
+
+	private void setFileSystemList() throws SigarException {
+		this.fileSystemList = this.sigar.getFileSystemList();
+	}
+
+	@XmlElement
+	public double getTotalGB() {
+		return this.totalGB;
+	}
+
+	private void setTotalGB() {
+		this.totalGB = 0;
+		for (FileSystemModel fileSystemModel : this.fieFileSystemModels) {
+			this.totalGB += fileSystemModel.getTotalGB();
 		}
-		
-		//the interval is ms
-		//System.out.println("Disk Read Bytes: " + postDiskReadBytes);
-		this.physicalDiskModel.setDiskReadRate((postDiskReadBytes - preDiskReadBytes)/((double)interval/1000)/1024);
-		this.timer.cancel();
+	}
+
+	@XmlElement
+	public double getUsedGB() {
+		return usedGB;
+	}
+
+	private void setUsedGB() {
+		this.usedGB = 0;
+		for (FileSystemModel fileSystemModel : this.fieFileSystemModels) {
+			this.usedGB += fileSystemModel.getUsedGB();
+		}
+	}
+
+	@XmlElement
+	public double getFreeGB() {
+		return freeGB;
+	}
+
+	private void setFreeGB() {
+		this.freeGB = 0;
+		for (FileSystemModel fileSystemModel : this.fieFileSystemModels) {
+			this.freeGB += fileSystemModel.getFreeGB();
+		}
+	}
+
+	@XmlElement
+	public double getUsedPercent() {
+
+		return usedPercent;
+	}
+
+	private void setUsedPercent() {
+		this.usedPercent = 0;
+		for (FileSystemModel fileSystemModel : this.fieFileSystemModels) {
+			this.usedPercent += fileSystemModel.getUsedPercent();
+		}
+	}
+
+	public Map<String, FileSystemUsage> getFileSystemUsages()
+			throws SigarException {
+		Map<String, FileSystemUsage> fileSystemUsages = new HashMap<String, FileSystemUsage>();
+		if (this.getFileSystemList() == null)
+			this.setFileSystemList();
+		for (FileSystem fileSystem : this.getFileSystemList()) {
+			if (fileSystem.getType() == 2)
+				fileSystemUsages.put(fileSystem.getDirName(),
+						sigar.getFileSystemUsage(fileSystem.getDirName()));
+		}
+		return fileSystemUsages;
+
 	}
 }

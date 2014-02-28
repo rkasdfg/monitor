@@ -5,9 +5,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.log4j.Logger;
+import org.bench4q.monitor.service.DataFomat;
 import org.bench4q.monitor.service.GetSigar;
 import org.hyperic.sigar.SigarException;
 
@@ -20,18 +23,18 @@ public class NetworkInterfaceModel {
 	private Logger logger = Logger.getLogger(NetworkInterfaceModel.class);
 
 	public static void main(String[] args) {
-		while(true){
-		long Time=System.currentTimeMillis();
-		NetworkInterfaceModel test = new NetworkInterfaceModel();
-		
-		test.logger.info("ll");
-		System.out.println("KiloBytesReceivedPerSecond:"
-				+ test.getKiloBytesReceivedPerSecond() + "kb/s");
-		System.out.println("KiloBytesSentPerSecond:"
-				+ test.getKiloBytesSentPerSecond() + "kb/s");
-		System.out.println("KiloBytesTotalPerSecond:"
-				+ test.getKiloBytesTotalPerSecond() + "kb/s");
-		System.out.println(System.currentTimeMillis()-Time);
+		while (true) {
+			long Time = System.currentTimeMillis();
+			NetworkInterfaceModel test = new NetworkInterfaceModel();
+
+			test.logger.info("ll");
+			System.out.println("KiloBytesReceivedPerSecond:"
+					+ test.getKiloBytesReceivedPerSecond() + "kb/s");
+			System.out.println("KiloBytesSentPerSecond:"
+					+ test.getKiloBytesSentPerSecond() + "kb/s");
+			System.out.println("KiloBytesTotalPerSecond:"
+					+ test.getKiloBytesTotalPerSecond() + "kb/s");
+			System.out.println(System.currentTimeMillis() - Time);
 		}
 	}
 
@@ -48,7 +51,7 @@ public class NetworkInterfaceModel {
 				.submit(new CalculateBytesSentPerSecond(interval));
 		try {
 			System.out.println(futureBytesReceivedPerSecond.get());
-				
+
 			this.setKiloBytesReceivedPerSecond(futureBytesReceivedPerSecond
 					.get());
 			this.setKiloBytesSentPerSecond(futureBytesSentPerSecond.get());
@@ -73,7 +76,7 @@ public class NetworkInterfaceModel {
 
 	@XmlElement
 	public Double getKiloBytesSentPerSecond() {
-			return this.kiloBytesSentPerSecond;
+		return this.kiloBytesSentPerSecond;
 	}
 
 	public void setKiloBytesSentPerSecond(Double kiloBytesSentPerSecond) {
@@ -117,7 +120,7 @@ abstract class CalculateBytesPerSecond implements Callable {
 			endTime = System.nanoTime();
 			postBytesSentSoFar = this.getBytesSoFar();
 			this.kiloBytesPerSecond = (double) ((postBytesSentSoFar - preBytesSentSoFar)
-					/ caculateTimeInterval(startTime, endTime) / 1024L);
+					/ DataFomat.caculateTimeInterval(startTime, endTime) / 1024L);
 			return this.kiloBytesPerSecond;
 		} catch (SigarException e) {
 			logger.error(e, e.fillInStackTrace());
@@ -132,9 +135,6 @@ abstract class CalculateBytesPerSecond implements Callable {
 
 	abstract long getBytesSoFar() throws SigarException;
 
-	public long caculateTimeInterval(long startTime, long endTime) {
-		return (endTime - startTime) / 100000000L;
-	}
 }
 
 class CalculateBytesSentPerSecond extends CalculateBytesPerSecond {

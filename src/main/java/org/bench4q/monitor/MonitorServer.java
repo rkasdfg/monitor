@@ -1,8 +1,6 @@
 package org.bench4q.monitor;
 
-import java.util.Timer;
 
-import org.bench4q.monitor.service.TimerService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;

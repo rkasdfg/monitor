@@ -24,16 +24,14 @@ public class ProcessorModelChild {
 		System.out.println(System.currentTimeMillis() - time);
 	}
 
-	public ProcessorModelChild() {
-
+	public ProcessorModelChild(int id) throws SigarException {
+		this.setInstance("Cpu" + id);
+		this.cpuPerc=GetSigar.getSigar().getCpuPerc();
 	}
 
 	public ProcessorModelChild(int id, CpuPerc cpuPerc) throws SigarException {
 		this.setInstance("Cpu" + id);
 		this.cpuPerc = cpuPerc;
-		this.getPrivilegedTimePercent();
-		this.getProcessorTimePercent();
-		this.getUserTimePercent();
 	}
 
 	@XmlElement
@@ -41,7 +39,7 @@ public class ProcessorModelChild {
 		return this.instance;
 	}
 
-	public void setInstance(String instance) {
+	private void setInstance(String instance) {
 		this.instance = instance;
 	}
 
@@ -52,7 +50,7 @@ public class ProcessorModelChild {
 		return processorTimePercent;
 	}
 
-	public void setProcessorTimePercent(double processorTimePercent) {
+	private void setProcessorTimePercent(double processorTimePercent) {
 		this.processorTimePercent = processorTimePercent;
 	}
 
@@ -60,10 +58,11 @@ public class ProcessorModelChild {
 	public double getUserTimePercent() throws SigarException {
 		long temp = Math.round(cpuPerc.getUser() * 10000);
 		this.setUserTimePercent(temp / 100.0);
+		
 		return this.userTimePercent;
 	}
 
-	public void setUserTimePercent(double userTimePercent) {
+	private void setUserTimePercent(double userTimePercent) {
 		this.userTimePercent = userTimePercent;
 	}
 
@@ -74,7 +73,7 @@ public class ProcessorModelChild {
 		return this.privilegedTimePercent;
 	}
 
-	public void setPrivilegedTimePercent(double privilegedTimePercent) {
+	private void setPrivilegedTimePercent(double privilegedTimePercent) {
 		this.privilegedTimePercent = privilegedTimePercent;
 	}
 }

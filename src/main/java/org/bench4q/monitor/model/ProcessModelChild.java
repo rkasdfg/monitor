@@ -2,6 +2,8 @@ package org.bench4q.monitor.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.bench4q.monitor.service.DataFomat;
 import org.hyperic.sigar.ProcCpu;
 import org.hyperic.sigar.ProcMem;
 import org.hyperic.sigar.ProcState;
@@ -21,34 +23,35 @@ public class ProcessModelChild {
 			ProcessSigarReleatedModel processSigarReleatedModel)
 			throws SigarException {
 		this.processSigarReleatedModel = processSigarReleatedModel;
-		this.processId = processId;
-		this.getProcessorTimePercent();
-		this.getInstanceString();
-		this.getResidentKBytes();
-		this.getVSize();
+		this.setProcessId(processId);
+		this.setInstanceString();
+		this.setProcessorTimePercent();
+		this.setMemSize();
+		this.setResidentKBytes();
+		this.setVSize();
+
 	}
 
 	@XmlElement
 	public double getProcessorTimePercent() throws SigarException {
-		ProcCpu procCpu = this.processSigarReleatedModel.getProcCpu();
-		setProcessorTimePercent(procCpu.getPercent());
 		return processorTimePercent;
 	}
 
-	public void setProcessorTimePercent(double processorTimePercent) {
-		this.processorTimePercent = processorTimePercent;
+	private void setProcessorTimePercent() {
+		ProcCpu procCpu = this.processSigarReleatedModel.getProcCpu();
+		this.processorTimePercent = DataFomat.fomatToPercent(procCpu
+				.getPercent());
 	}
 
 	@XmlElement
 	public String getInstanceString() throws SigarException {
-		ProcState procState = this.processSigarReleatedModel.getProcState();
-		setInstanceString(procState.getName());
-
 		return instanceString;
 	}
 
-	public void setInstanceString(String instanceString) {
-		this.instanceString = instanceString;
+	private void setInstanceString() {
+		ProcState procState = this.processSigarReleatedModel.getProcState();
+		this.instanceString = procState.getName();
+
 	}
 
 	@XmlElement
@@ -56,42 +59,41 @@ public class ProcessModelChild {
 		return processId;
 	}
 
-	public void setProcessId(long processId) {
+	private void setProcessId(long processId) {
 		this.processId = processId;
 	}
 
 	@XmlElement
 	public long getVSize() throws SigarException {
-		ProcMem procMem = this.processSigarReleatedModel.getProcMem();
-		
-		setVSize(procMem.getSize()/1024L);
+
 		return vSize;
 	}
 
-	public void setVSize(long virtualBytes) {
-		this.vSize = virtualBytes;
+	private void setVSize() {
+		ProcMem procMem = this.processSigarReleatedModel.getProcMem();
+
+		this.vSize = procMem.getSize() / 1024L;
 	}
 
 	@XmlElement
 	public long getResidentKBytes() throws SigarException {
-		ProcMem procMem = this.processSigarReleatedModel.getProcMem();
-		setResidentKBytes(procMem.getResident()/1024L);
+
 		return residentKBytes;
 	}
 
-	public void setResidentKBytes(long residentBytes) {
-		this.residentKBytes = residentBytes;
+	private void setResidentKBytes() {
+		ProcMem procMem = this.processSigarReleatedModel.getProcMem();
+		this.residentKBytes = procMem.getResident() / 1024L;
 	}
 
 	@XmlElement
 	public long getMemSize() {
-		ProcMem procMem = this.processSigarReleatedModel.getProcMem();
-		setMemSize(procMem.getSize());
 		return memSize;
 	}
 
-	private void setMemSize(long memSize) {
-		this.memSize = memSize;
+	private void setMemSize() {
+		ProcMem procMem = this.processSigarReleatedModel.getProcMem();
+		this.memSize = procMem.getSize();
 	}
-	
+
 }
