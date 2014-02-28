@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/Monitor")
+@RequestMapping("/monitor")
 public class HistoryDataController {
-	@RequestMapping("history")
+	@RequestMapping("/history")
 	@ResponseBody ListMainModel getHistory(@RequestParam String starttime, @RequestParam String endtime) throws ParseException
 	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");

@@ -1,6 +1,5 @@
 package org.bench4q.monitor.model;
 
-
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
@@ -12,32 +11,36 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hyperic.sigar.SigarException;
 
-@XmlRootElement(name="history")
+@XmlRootElement(name = "history")
 @XmlType
 public class MainModel {
 	@XmlElement
 	private String date;
-	@XmlElement(name="process_info")
+	@XmlElement(name = "processor_info")
 	private ProcessorModel processorModel;
-	@XmlElement(name="memory_info")
+	@XmlElement(name = "memory_info")
 	private MemoryModel memoryModel;
-	@XmlElement(name="disk_info")
+	@XmlElement(name = "disk_info")
 	private PhysicalDiskModel physicalDiskModel;
-	@XmlElement(name="network_info")
+	@XmlElement(name = "network_info")
 	private NetworkInterfaceModel networkInterfaceModel;
-	
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-	
-	public MainModel(){
-		
+	@XmlElement(name = "process_info")
+	private ProcessModel processModel;
+	private SimpleDateFormat dateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd-HH-mm-ss");
+
+	public MainModel() {
+
 	}
-	
-	public MainModel(Date date) throws SigarException, InterruptedException, ExecutionException{
+
+	public MainModel(Date date) throws SigarException, InterruptedException,
+			ExecutionException {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		this.date = dateFormat.format(date);
 		processorModel = new ProcessorModel();
 		memoryModel = new MemoryModel();
 		physicalDiskModel = new PhysicalDiskModel();
 		networkInterfaceModel = new NetworkInterfaceModel();
+		processModel=new ProcessModel();
 	}
 }

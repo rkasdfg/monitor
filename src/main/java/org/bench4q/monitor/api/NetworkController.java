@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/Monitor")
+@RequestMapping("/monitor")
 public class NetworkController {
 	
-	@RequestMapping("/Network")
+	@RequestMapping("/network")
 	@ResponseBody NetworkInterfaceModel getNetworkInterfaceModel(){
 		NetworkInterfaceModel retModel = new NetworkInterfaceModel();
 		return retModel;

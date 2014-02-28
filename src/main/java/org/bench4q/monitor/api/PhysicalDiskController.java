@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/Monitor")
+@RequestMapping("/monitor")
 
 public class PhysicalDiskController {
-	@RequestMapping("PhysicalDisk")
+	@RequestMapping("pshysicalDisk")
 	@ResponseBody PhysicalDiskModel getPhysicalDiskModel() throws SigarException, InterruptedException, ExecutionException{
 		PhysicalDiskModel retModel = new PhysicalDiskModel();
 		return retModel;

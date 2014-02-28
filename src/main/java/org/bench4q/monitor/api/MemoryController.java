@@ -7,14 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/Monitor")
+@RequestMapping("/monitor")
 public class MemoryController {
-	@RequestMapping("/Memory")
+	@RequestMapping("/memory")
 	@ResponseBody
 	MemoryModel getMemoryModel() throws SigarException
 	{
 		MemoryModel retModel = new MemoryModel();
 		return retModel;
 	}
-
 }

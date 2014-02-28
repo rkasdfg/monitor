@@ -22,20 +22,6 @@ public class ProcessorController {
 		return retModel;
 	}
 
-	@RequestMapping("/processorList")
-	@ResponseBody
-	List<String> getProcessorList() throws SigarException {
-		List<String> processorList = new ArrayList<String>();
-		ProcessorModel processorModel = new ProcessorModel();
-		if (processorModel.getProcessorModelList() != null) {
-			for (ProcessorModelChild processorModelChild : processorModel
-					.getProcessorModelList()) {
-				processorList.add(processorModelChild.getInstance());
-			}
-		}
-		return processorList;
-	}
-
 	@RequestMapping("/processor/{instanceName}")
 	@ResponseBody
 	ProcessorModelChild getProcessorModelChild(

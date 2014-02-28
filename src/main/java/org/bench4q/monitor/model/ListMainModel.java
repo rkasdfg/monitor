@@ -15,10 +15,8 @@ public class ListMainModel {
 	public List<MainModel> getHistorylist() {
 		return historylist;
 	}
-
 	public void setHistorylist(List<MainModel> historylist) {
 		this.historylist = historylist;
 	}
-
 
 }
