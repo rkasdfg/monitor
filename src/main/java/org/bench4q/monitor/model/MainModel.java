@@ -37,10 +37,27 @@ public class MainModel {
 			ExecutionException {
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		this.date = dateFormat.format(date);
+		long start=System.currentTimeMillis();
+		
 		processorModel = new ProcessorModel();
+		long end=System.currentTimeMillis();
+		System.out.println("processor"+(end-start));
+		start=end;
 		memoryModel = new MemoryModel();
+		 end=System.currentTimeMillis();
+		System.out.println("mem"+(end-start));
+		start=end;
 		physicalDiskModel = new PhysicalDiskModel();
+		 end=System.currentTimeMillis();
+			System.out.println("phy"+(end-start));
+			start=end;
 		networkInterfaceModel = new NetworkInterfaceModel();
+		 end=System.currentTimeMillis();
+			System.out.println("net"+(end-start));
+			start=end;
 		processModel=new ProcessModel();
+		 end=System.currentTimeMillis();
+			System.out.println("proc"+(end-start));
+			start=end;
 	}
 }

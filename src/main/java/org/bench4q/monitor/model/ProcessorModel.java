@@ -57,23 +57,15 @@ public class ProcessorModel {
 		this.setCpuInstanceList();
 		this.setSize();
 	}
-
-	@XmlElementWrapper(name = "processors")
-	@XmlElement(name = "processor", type = ProcessorModelChild.class)
-	public List<ProcessorModelChild> getProcessorModelList() {
-		return processorModelList;
+	@XmlElement
+	public int getSize() {
+		return size;
 	}
 
-	private void setPorcessorModelList() throws SigarException {
-		this.processorModelList = new ArrayList<ProcessorModelChild>();
-		CpuPerc[] cpuPercList = sigar.getCpuPercList();
-		for (int i = 0; i < cpuPercList.length; ++i) {
-			ProcessorModelChild processorModelChild = new ProcessorModelChild(
-					i, cpuPercList[i]);
-			processorModelList.add(processorModelChild);
-		}
-
+	private void setSize() {
+		this.size = this.getProcessorModelList().size();
 	}
+	
 
 	@XmlElement(name = "processorTimePercent")
 	public double getProcessorTimePercent() throws SigarException {
@@ -118,8 +110,8 @@ public class ProcessorModel {
 		long temp = Math.round(this.speed * 100);
 		this.speed = temp / 1024L / 100;
 	}
-
-	@XmlElement
+@XmlElementWrapper(name="instanceNameList")
+	@XmlElement(name="instanceName",type=String.class)
 	public List<String> getCpuInstanceList() {
 		return cpuInstanceList;
 	}
@@ -135,14 +127,20 @@ public class ProcessorModel {
 		}
 
 	}
-
-	@XmlElement
-	public int getSize() {
-		return size;
+	@XmlElementWrapper(name = "processorlist")
+	@XmlElement(name = "processor", type = ProcessorModelChild.class)
+	public List<ProcessorModelChild> getProcessorModelList() {
+		return processorModelList;
 	}
 
-	private void setSize() {
-		this.size = this.getProcessorModelList().size();
-	}
+	private void setPorcessorModelList() throws SigarException {
+		this.processorModelList = new ArrayList<ProcessorModelChild>();
+		CpuPerc[] cpuPercList = sigar.getCpuPercList();
+		for (int i = 0; i < cpuPercList.length; ++i) {
+			ProcessorModelChild processorModelChild = new ProcessorModelChild(
+					i, cpuPercList[i]);
+			processorModelList.add(processorModelChild);
+		}
 
+	}
 }

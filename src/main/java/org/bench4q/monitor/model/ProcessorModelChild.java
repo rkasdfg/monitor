@@ -23,14 +23,16 @@ public class ProcessorModelChild {
 		System.out.println(testModel.getProcessorTimePercent());
 		System.out.println(System.currentTimeMillis() - time);
 	}
-
+public ProcessorModelChild(){
+	
+}
 	public ProcessorModelChild(int id) throws SigarException {
-		this.setInstance("Cpu" + id);
+		this.setInstance("cpu" + id);
 		this.cpuPerc=GetSigar.getSigar().getCpuPerc();
 	}
 
 	public ProcessorModelChild(int id, CpuPerc cpuPerc) throws SigarException {
-		this.setInstance("Cpu" + id);
+		this.setInstance("cpu" + id);
 		this.cpuPerc = cpuPerc;
 	}
 

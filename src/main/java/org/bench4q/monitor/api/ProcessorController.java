@@ -1,8 +1,5 @@
 package org.bench4q.monitor.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bench4q.monitor.model.ProcessorModel;
 import org.bench4q.monitor.model.ProcessorModelChild;
 import org.hyperic.sigar.SigarException;

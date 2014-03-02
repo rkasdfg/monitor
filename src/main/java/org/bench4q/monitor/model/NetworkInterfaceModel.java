@@ -19,7 +19,7 @@ public class NetworkInterfaceModel {
 	private Double kiloBytesTotalPerSecond;
 	private Double kiloBytesReceivedPerSecond;
 	private Double kiloBytesSentPerSecond;
-	private long interval = 1000;
+	private long interval = 500;
 	private Logger logger = Logger.getLogger(NetworkInterfaceModel.class);
 
 	public static void main(String[] args) {
@@ -121,7 +121,7 @@ abstract class CalculateBytesPerSecond implements Callable {
 			postBytesSentSoFar = this.getBytesSoFar();
 			this.kiloBytesPerSecond = (double) ((postBytesSentSoFar - preBytesSentSoFar)
 					/ DataFomat.caculateTimeInterval(startTime, endTime) / 1024L);
-			return this.kiloBytesPerSecond;
+			return new Double(Math.round(this.kiloBytesPerSecond*100)/100);
 		} catch (SigarException e) {
 			logger.error(e, e.fillInStackTrace());
 			return new Double(0);

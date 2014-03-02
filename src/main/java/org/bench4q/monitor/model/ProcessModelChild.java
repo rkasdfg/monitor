@@ -19,6 +19,13 @@ public class ProcessModelChild {
 	private long vSize;
 	private ProcessSigarReleatedModel processSigarReleatedModel;
 
+	public ProcessModelChild(){
+		
+	}
+	public ProcessModelChild(long pid){
+		this.processId=pid;
+		this.instanceString="no power to get info";
+	}
 	public ProcessModelChild(long processId,
 			ProcessSigarReleatedModel processSigarReleatedModel)
 			throws SigarException {
@@ -31,7 +38,6 @@ public class ProcessModelChild {
 		this.setVSize();
 
 	}
-
 	@XmlElement
 	public double getProcessorTimePercent() throws SigarException {
 		return processorTimePercent;

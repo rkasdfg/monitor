@@ -7,12 +7,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.bench4q.monitor.service.DataFomat;
 import org.bench4q.monitor.service.GetSigar;
 import org.hyperic.sigar.FileSystemUsage;
 import org.hyperic.sigar.SigarException;
-
+@XmlRootElement(name="fileSystem")
 public class FileSystemModel {
 	private String fileDir;
 	private Double diskReadKBytesRate;
@@ -38,7 +39,9 @@ public class FileSystemModel {
 		
 
 	}
-
+public FileSystemModel(){
+	
+}
 	public FileSystemModel(FileSystemUsage fileSystemUsage, String fileDir,
 			int interval) throws InterruptedException, ExecutionException {
 

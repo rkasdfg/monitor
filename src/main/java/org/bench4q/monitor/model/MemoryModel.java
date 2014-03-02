@@ -18,6 +18,8 @@ public class MemoryModel {
 	private long availableKiloBytes;
 	private long totalKiloBytes;
 	private double memoryUsedPercent;
+	private double swapKiloBytes;
+	private double swapFreeKiloBytes;
 	private Sigar sigar = GetSigar.getSigar();
 	private Swap swap;
 	private Mem mem;
@@ -33,6 +35,8 @@ public class MemoryModel {
 		System.out.println("UsedPerc: " + model.getMemoryUsedPercent()+"%");
 		System.out.println("Total: " + model.getTotalKiloBytes()+"kb");
 		System.out.println("Aval: " + model.getAvailableKiloBytes()+"kb");
+		System.out.println("swap total:"+model.getSwapKiloBytes()+"kb");
+		System.out.println("swap free :"+model.getSwapFreeKiloBytes()+"kb");
 	}
 
 	public MemoryModel() throws SigarException {
@@ -42,6 +46,8 @@ public class MemoryModel {
 		this.getMemoryUsedPercent();
 		this.getAvailableKiloBytes();
 		this.getTotalKiloBytes();
+		this.setSwapKiloBytes();
+		this.setSwapFreeKiloBytes();
 	}
 
 	@XmlElement
@@ -79,7 +85,7 @@ public class MemoryModel {
 	@XmlElement
 	public long getAvailableKiloBytes() throws SigarException {
 			mem = sigar.getMem();
-		setAvailableKiloBytes(mem.getFree() / 1024L);
+		setAvailableKiloBytes(mem.getActualFree()/ 1024L);
 		return availableKiloBytes;
 	}
 
@@ -109,4 +115,21 @@ public class MemoryModel {
 	private void setMemoryUsedPercent(double memoryUsedPercent) {
 		this.memoryUsedPercent = memoryUsedPercent;
 	}
+@XmlElement
+	public double getSwapKiloBytes() {
+		return swapKiloBytes;
+	}
+
+	private void setSwapKiloBytes() {
+		this.swapKiloBytes = this.swap.getTotal()/1024L;
+	}
+@XmlElement
+	public double getSwapFreeKiloBytes() {
+		return swapFreeKiloBytes;
+	}
+
+	private void setSwapFreeKiloBytes() {
+		this.swapFreeKiloBytes = this.swap.getFree()/1024L;
+	}
+	
 }

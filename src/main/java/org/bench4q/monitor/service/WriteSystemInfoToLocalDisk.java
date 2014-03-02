@@ -12,7 +12,6 @@ import java.io.*;
 
 import org.bench4q.monitor.model.*;
 import org.hyperic.sigar.SigarException;
-
 public class WriteSystemInfoToLocalDisk {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 	private String savePath;
@@ -27,7 +26,6 @@ public class WriteSystemInfoToLocalDisk {
 	public void setSavaPath(String savePath){
 		this.savePath = savePath;
 	}
-	@SuppressWarnings("restriction")
 	public void writeCurrentSystemInfoToLocalDisk() throws SigarException, InterruptedException, ExecutionException{
 		dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		Date date = new Date();

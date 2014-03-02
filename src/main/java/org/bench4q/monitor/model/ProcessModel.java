@@ -2,18 +2,20 @@ package org.bench4q.monitor.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.bench4q.monitor.service.GetSigar;
-import org.hyperic.sigar.ProcCpu;
-import org.hyperic.sigar.ProcMem;
 import org.hyperic.sigar.ProcState;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
-import org.hyperic.sigar.SigarPermissionDeniedException;
 
 @XmlRootElement(name = "Process")
 public class ProcessModel {
@@ -23,7 +25,8 @@ public class ProcessModel {
 	private List<String> processNameList;
 	private int size;
 
-	public static void main(String args[]) throws SigarException {
+	public static void main(String args[]) throws SigarException,
+			InterruptedException, ExecutionException {
 		long time = System.currentTimeMillis();
 		ProcessModel processModel = new ProcessModel();
 		System.out.println("total process:"
@@ -59,11 +62,21 @@ public class ProcessModel {
 
 	}
 
-	public ProcessModel() throws SigarException {
+	public ProcessModel() throws SigarException, InterruptedException,
+			ExecutionException {
 		this.setProcessPids();
 		this.setProcesModelList();
 		this.setProcessNameList();
 		this.setSize();
+	}
+
+	@XmlElement
+	public int getSize() {
+		return this.size;
+	}
+
+	private void setSize() throws SigarException {
+		this.size = sigar.getProcList().length;
 	}
 
 	@XmlElementWrapper
@@ -72,18 +85,25 @@ public class ProcessModel {
 		return processModelList;
 	}
 
-	public void setProcesModelList() throws SigarException {
+	public void setProcesModelList() throws SigarException,
+			InterruptedException, ExecutionException {
 		this.processModelList = new ArrayList<ProcessModelChild>();
+		ExecutorService executorService = Executors
+				.newFixedThreadPool(this.processPids.length);
+		List<Future<ProcessModelChild>> futures = new ArrayList<Future<ProcessModelChild>>();
 		for (int i = 0; i < this.processPids.length; ++i) {
-			ProcessModelChild processModelChild;
 			try {
-				processModelChild = new ProcessModelChild(processPids[i],
-						new ProcessSigarReleatedModel(processPids[i]));
-			} catch (SigarPermissionDeniedException e) {
-				processModelChild = null;
+				futures.add(executorService.submit(new NewProcessChild(
+						processPids[i], new ProcessSigarReleatedModel(
+								processPids[i]))));
+			} catch (SigarException e) {
+				processModelList.add(new ProcessModelChild(processPids[i]));
 			}
-			processModelList.add(processModelChild);
 		}
+		for (Future<ProcessModelChild> future : futures) {
+			processModelList.add(future.get());
+		}
+
 	}
 
 	public long[] getProcessPids() {
@@ -94,7 +114,8 @@ public class ProcessModel {
 		this.processPids = sigar.getProcList();
 	}
 
-	@XmlElement
+	@XmlElementWrapper(name = "processNameList")
+	@XmlElement(name = "processName", type = String.class)
 	public List<String> getProcessNameList() {
 		return processNameList;
 	}
@@ -107,49 +128,23 @@ public class ProcessModel {
 		}
 	}
 
-	@XmlElement
-	public int getSize() {
-		return this.size;
-	}
-
-	private void setSize() throws SigarException {
-		this.size = sigar.getProcList().length;
-	}
 }
 
-class ProcessSigarReleatedModel {
-	private ProcCpu procCpu;
-	private ProcState procState;
-	private ProcMem procMem;
+class NewProcessChild implements Callable<ProcessModelChild> {
+	private long pid;
+	private ProcessSigarReleatedModel processSigarReleatedModel;
 
-	public ProcessSigarReleatedModel(long pid) throws SigarException {
-		this.setProcCpu(GetSigar.getSigar().getProcCpu(pid));
-		this.setProcMem(GetSigar.getSigar().getProcMem(pid));
-		this.setProcState(GetSigar.getSigar().getProcState(pid));
+	public NewProcessChild(long pid,
+			ProcessSigarReleatedModel processSigarReleatedModel) {
+		this.pid = pid;
+		this.processSigarReleatedModel = processSigarReleatedModel;
 	}
 
-	public ProcCpu getProcCpu() {
-		return procCpu;
+	public ProcessModelChild call() {
+		try {
+			return new ProcessModelChild(pid, processSigarReleatedModel);
+		} catch (SigarException e) {
+			return new ProcessModelChild(pid);
+		}
 	}
-
-	private void setProcCpu(ProcCpu procCpu) {
-		this.procCpu = procCpu;
-	}
-
-	public ProcState getProcState() {
-		return procState;
-	}
-
-	private void setProcState(ProcState procState) {
-		this.procState = procState;
-	}
-
-	public ProcMem getProcMem() {
-		return procMem;
-	}
-
-	private void setProcMem(ProcMem procMem) {
-		this.procMem = procMem;
-	}
-
 }

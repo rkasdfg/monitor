@@ -16,7 +16,9 @@ public class MainController {
 	@ResponseBody
 	MainModel getMainModel() throws SigarException, InterruptedException, ExecutionException {
 		Date date = new Date();
+		long temp=System.currentTimeMillis();
 		MainModel retModel = new MainModel(date);
+		System.out.println("total time"+(System.currentTimeMillis()-temp));
 		return retModel;
 	}
 
