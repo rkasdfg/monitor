@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.bench4q.monitor.service.GetSigar;
+import org.bench4q.monitor.service.GetThreadPool;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.FileSystemUsage;
@@ -30,6 +33,8 @@ public class PhysicalDiskModel {
 	private FileSystem[] fileSystemList;
 	private final int interval = 500;
 
+	// private Logger logger = Logger.getLogger(PhysicalDiskModel.class);
+
 	public static void main(String[] args) throws SigarException,
 			InterruptedException, ExecutionException {
 		PhysicalDiskModel physicalDiskModel = new PhysicalDiskModel();
@@ -40,8 +45,9 @@ public class PhysicalDiskModel {
 
 		System.out.println("write rate: "
 				+ physicalDiskModel.getDiskWriteKBytesRate());
-		System.out.println("used percent:"+physicalDiskModel.getUsedPercent());
-		System.out.println("total:"+physicalDiskModel.getTotalGB());
+		System.out
+				.println("used percent:" + physicalDiskModel.getUsedPercent());
+		System.out.println("total:" + physicalDiskModel.getTotalGB());
 
 	}
 
@@ -72,12 +78,20 @@ public class PhysicalDiskModel {
 
 		Map<String, FileSystemUsage> fileSysUsageMap = this
 				.getFileSystemUsages();
-		if (fileSysUsageMap.keySet() == null)
-			throw new NullPointerException();
-		for (String fileDir : fileSysUsageMap.keySet()) {
-			fieFileSystemModels.add(new FileSystemModel(fileSysUsageMap
-					.get(fileDir), fileDir, interval));
+		if (fileSysUsageMap.keySet() != null) {
+			List<Future<FileSystemModel>> futures = new ArrayList<Future<FileSystemModel>>();
+
+			for (String fileDir : fileSysUsageMap.keySet()) {
+				futures.add(GetThreadPool.getExecutorService().submit(
+						new NewFileSystemModel(fileSysUsageMap.get(fileDir),
+								fileDir, interval)));
+
+			}
+			for (Future<FileSystemModel> future : futures) {
+				fieFileSystemModels.add(future.get());
+			}
 		}
+
 	}
 
 	@XmlElement
@@ -191,4 +205,36 @@ public class PhysicalDiskModel {
 		return fileSystemUsages;
 
 	}
+}
+
+class NewFileSystemModel implements Callable<FileSystemModel> {
+	private FileSystemUsage fileSystemUsage;
+	private String fileDir;
+	private int interval;
+
+	public NewFileSystemModel(FileSystemUsage fileSystemUsage, String fileDir,
+			int interval) {
+		this.fileDir = fileDir;
+		this.fileSystemUsage = fileSystemUsage;
+		this.interval = interval;
+
+	}
+
+	public FileSystemModel call() throws InterruptedException,
+			ExecutionException {
+		return new FileSystemModel(this.fileSystemUsage, fileDir, interval);
+	}
+
+	public FileSystemUsage getFileSystemUsage() {
+		return fileSystemUsage;
+	}
+
+	public String getFileDir() {
+		return fileDir;
+	}
+
+	public long getInterval() {
+		return interval;
+	}
+
 }

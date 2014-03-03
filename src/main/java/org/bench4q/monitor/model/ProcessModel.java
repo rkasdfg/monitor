@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -13,6 +11,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.bench4q.monitor.service.GetSigar;
+import org.bench4q.monitor.service.GetThreadPool;
 import org.hyperic.sigar.ProcState;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
@@ -88,14 +87,12 @@ public class ProcessModel {
 	public void setProcesModelList() throws SigarException,
 			InterruptedException, ExecutionException {
 		this.processModelList = new ArrayList<ProcessModelChild>();
-		ExecutorService executorService = Executors
-				.newFixedThreadPool(this.processPids.length);
 		List<Future<ProcessModelChild>> futures = new ArrayList<Future<ProcessModelChild>>();
 		for (int i = 0; i < this.processPids.length; ++i) {
 			try {
-				futures.add(executorService.submit(new NewProcessChild(
-						processPids[i], new ProcessSigarReleatedModel(
-								processPids[i]))));
+				futures.add(GetThreadPool.getExecutorService().submit(
+						new NewProcessChild(processPids[i],
+								new ProcessSigarReleatedModel(processPids[i]))));
 			} catch (SigarException e) {
 				processModelList.add(new ProcessModelChild(processPids[i]));
 			}

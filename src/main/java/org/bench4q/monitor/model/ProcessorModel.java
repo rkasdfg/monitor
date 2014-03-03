@@ -2,13 +2,18 @@ package org.bench4q.monitor.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.log4j.Logger;
 import org.bench4q.monitor.service.DataFomat;
 import org.bench4q.monitor.service.GetSigar;
+import org.bench4q.monitor.service.GetThreadPool;
 import org.hyperic.sigar.CpuInfo;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.CpuPerc;
@@ -25,6 +30,7 @@ public class ProcessorModel {
 	private double speed;
 	private List<String> cpuInstanceList;
 	private int size;
+	private Logger logger = Logger.getLogger(ProcessModelChild.class);
 
 	public static void main(String args[]) {
 		try {
@@ -57,6 +63,7 @@ public class ProcessorModel {
 		this.setCpuInstanceList();
 		this.setSize();
 	}
+
 	@XmlElement
 	public int getSize() {
 		return size;
@@ -65,7 +72,6 @@ public class ProcessorModel {
 	private void setSize() {
 		this.size = this.getProcessorModelList().size();
 	}
-	
 
 	@XmlElement(name = "processorTimePercent")
 	public double getProcessorTimePercent() throws SigarException {
@@ -110,8 +116,9 @@ public class ProcessorModel {
 		long temp = Math.round(this.speed * 100);
 		this.speed = temp / 1024L / 100;
 	}
-@XmlElementWrapper(name="instanceNameList")
-	@XmlElement(name="instanceName",type=String.class)
+
+	@XmlElementWrapper(name = "instanceNameList")
+	@XmlElement(name = "instanceName", type = String.class)
 	public List<String> getCpuInstanceList() {
 		return cpuInstanceList;
 	}
@@ -127,6 +134,7 @@ public class ProcessorModel {
 		}
 
 	}
+
 	@XmlElementWrapper(name = "processorlist")
 	@XmlElement(name = "processor", type = ProcessorModelChild.class)
 	public List<ProcessorModelChild> getProcessorModelList() {
@@ -136,11 +144,36 @@ public class ProcessorModel {
 	private void setPorcessorModelList() throws SigarException {
 		this.processorModelList = new ArrayList<ProcessorModelChild>();
 		CpuPerc[] cpuPercList = sigar.getCpuPercList();
+		List<Future<ProcessorModelChild>> futures = new ArrayList<Future<ProcessorModelChild>>();
 		for (int i = 0; i < cpuPercList.length; ++i) {
-			ProcessorModelChild processorModelChild = new ProcessorModelChild(
-					i, cpuPercList[i]);
-			processorModelList.add(processorModelChild);
+			futures.add(GetThreadPool.getExecutorService().submit(
+					new NewProcessorModelChild(i, cpuPercList[i])));
+
+		}
+		for (Future<ProcessorModelChild> future : futures) {
+			try {
+				processorModelList.add(future.get());
+			} catch (InterruptedException e) {
+				logger.info(e, e.fillInStackTrace());
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				logger.info(e, e.fillInStackTrace());
+			}
 		}
 
+	}
+}
+
+class NewProcessorModelChild implements Callable<ProcessorModelChild> {
+	private int id;
+	private CpuPerc cpuPerc;
+
+	public NewProcessorModelChild(int id, CpuPerc cpuPerc) {
+		this.id = id;
+		this.cpuPerc = cpuPerc;
+	}
+
+	public ProcessorModelChild call() throws SigarException {
+		return new ProcessorModelChild(id, cpuPerc);
 	}
 }

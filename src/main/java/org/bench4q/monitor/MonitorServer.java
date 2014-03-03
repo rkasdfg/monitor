@@ -1,6 +1,9 @@
 package org.bench4q.monitor;
 
 
+import java.util.Timer;
+
+import org.bench4q.monitor.service.TimerService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
@@ -74,9 +77,9 @@ public class MonitorServer {
 
 		MonitorServer monitorServer = new MonitorServer(5556);
 		monitorServer.start();
-		/*Timer timer = new Timer();
+		Timer timer = new Timer();
 		timer.schedule(new TimerService(), 1000, 60000);
-*/
+
 
 	}
 }
